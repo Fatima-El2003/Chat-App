@@ -1,24 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
-
+import './style.scss';
+import Register from './Pages/Register';
+import Login from './Pages/Login';
+import Home from './Pages/Home';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from './Context/AuthContext';
 function App() {
+  const {currentUser} = useContext(AuthContext)
+  const ProtectedRouter = ({children}) =>{
+    if(!currentUser){
+      return <Navigate to="/Login" />
+    }
+    return children //children here means all components we apply this protectedRouter to.
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path='/Register' element={<Register />} />
+        <Route path='/Login' element={<Login />} />
+        <Route path='/' element={<ProtectedRouter><Home /></ProtectedRouter>} />
+      </Routes>
+    </Router>
   );
 }
 
